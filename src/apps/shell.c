@@ -41,6 +41,8 @@ cmdtab[] =
 	{	"ts", 			ts_main,			"[consola...]"		},
 	{	"kill",			kill_main,			"tarea [status]"	},
 	{	"test",			test_main,			""					},
+	{	"time",			rtc_main,			""					}, //RTC
+	{	"cron",			cron_main,			""					},
 	{															}
 };
 
@@ -102,6 +104,8 @@ shell_main(int argc, char **argv)
 
 	mt_cons_getattr(&fg, &bg);
 	GetInfo(CurrentTask(), &info);
+
+
 	while ( true )
 	{
 		// Leer línea de comando eventualmente usando la historia

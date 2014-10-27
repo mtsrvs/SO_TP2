@@ -18,4 +18,7 @@ int test_main(int argc, char *argv[]);				// test.c
 int kill_main(int argc, char *argv[]);				// kill.c
 int ts_main(int argc, char *argv[]);				// ts.c
 
+//Nuestras tareas creadas
+int rtc_main(void);									// rtc.c
+
 #endif
