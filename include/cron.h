@@ -1,7 +1,7 @@
 #ifndef __CRON_H__
 #define __CRON_H__
 
-typedef int (*TaskFunc_t)(void *arg);
+//typedef int (*TaskFunc_t)(void *arg);
 
 typedef struct
 {
@@ -13,8 +13,8 @@ typedef struct
 
 typedef struct 
 {
-	TaskFunc_t func;
-	char *args[10];
+	//TaskFunc_t func;
+	//char *args[10];
 	date_t date;
 	// taskcron_t *head;
 	// taskcron_t *tail;

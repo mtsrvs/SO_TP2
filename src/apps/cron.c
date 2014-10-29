@@ -2,8 +2,16 @@
 #include <kernel.h>
 #include <apps.h>
 
-
 typedef int (*main_func)(int argc, char *argv[]);
+
+typedef struct
+{
+	main_func func;
+	int nargs;
+	//char *args[NARGS+1];
+	//char buf[BUFSIZE];
+}
+execpars;
 
 static struct cmdentry
 {
@@ -11,7 +19,6 @@ static struct cmdentry
 	main_func func;
 	char *params;
 }
-
 cmdtab[] =
 {
 	{	"setkb",		setkb_main, 		"[distrib]"			},
@@ -33,16 +40,14 @@ cmdtab[] =
 	{	"time",			rtc_main,			""					}, //RTC
 	{															}
 };
+//taskcron_t*
+//void create_cron_task(TaskFunc_t func, /*unsigned stacksize,*/ void *arg, const char *name){
+//}
 
-taskcron_t*
-create_a_taskcron(main_func func, int date, int month, int hour, int min){
-	taskcron_t *task = malloc(sizeof(taskcron_t));
-	task->func = func;
-	// task->head = NULL;
-	// task->tail = NULL;
-	task->date = (date_t){min, hour, date, month};
-	return task;
-}
+/*void create_aCronTask(main_func func, int mm, int hr, int month, int year){
+    date_t date = {mm,hr,month,year};
+    return;
+}*/
 
 int
 cron_main(){
@@ -55,13 +60,16 @@ cron_main(){
 			{
 				// found = true;
 				//ex.func = cp->func;
-				
-				int status;
-
-				taskcron_t *t = create_a_taskcron(cp->func, 10, 10, 10, 10);
+				//printk("name: %s\n", cp->name);
+				//int status;
+				//int aux = 10;
+                //date_t date = {10,10,10,10};
+				//taskcron_t *t = create_a_taskcron(cp->func, 10, 10, 10, 10);
+				//create_aCronTask(cp->func,aux,aux,aux,aux);
 				break;
 			}
 		}
+	
 
 //		if ( !found )
 //cprintk(LIGHTRED, BLACK, "Comando %s desconocido\n", ex.args[0]);
