@@ -20,5 +20,6 @@ int ts_main(int argc, char *argv[]);				// ts.c
 
 //Nuestras tareas creadas
 int rtc_main(void);									// rtc.c
+int cron_main(void);								// cron.c
 
 #endif

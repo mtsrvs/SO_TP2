@@ -1,6 +1,7 @@
 // SOURCE
 // http://wiki.osdev.org/CMOS#Getting_Current_Date_and_Time_from_RTC
 #include <kernel.h> //para utilizar outb e inb
+#include <lib.h>
 
 #define CURRENT_YEAR        2014                            // Change this each year!
  
@@ -13,35 +14,6 @@ unsigned char hour;
 unsigned char day;
 unsigned char month;
 unsigned int year;
- 
-//TLS
-
-// typedef struct
-// {
-//       unsigned char century;
-//       unsigned char last_second;
-//       unsigned char last_minute;
-//       unsigned char last_hour;
-//       unsigned char last_day;
-//       unsigned char last_month;
-//       unsigned char last_year;
-//       unsigned char last_century;
-//       unsigned char registerB;
-// }
-// data; 
-
-// #define century         TLS(data)->century
-// #define last_second     TLS(data)->last_second
-// #define last_minute     TLS(data)->last_minute
-// #define last_hour       TLS(data)->last_hour
-// #define last_day        TLS(data)->last_day
-// #define last_month      TLS(data)->last_month
-// #define last_year       TLS(data)->last_year
-// #define last_century    TLS(data)->last_century
-// #define registerB       TLS(data)->registerB
-
-// void outb(int port, int value);
-// int inb(int port);
  
 enum {
       cmos_address = 0x70,
@@ -61,19 +33,32 @@ unsigned char get_RTC_register(int reg) {
  
 
 void write_rtc(unsigned char hour, unsigned char minute, unsigned char second) {
-      // if(hour<0 || hour>23 || minute<0 || minute >59 || second<0 || second>59){
-      //       printk("datos incorrectos");
-      //       return;
-      // }
+      char hex2[6] = {0x00, 0x10, 0x20, 0x30, 0x40, 0x50};
+      char hex1[10] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09};
+      int uni, deci;
 
-      outb(cmos_address, 0x00);   // select Status Register A, and disable NMI (by setting the 0x80 bit)
-      outb(cmos_data, 0x08);
+      if(hour<0 || hour>23 || minute<0 || minute >59 || second<0 || second>59){
+            printk("datos incorrectos");
+            return;
+      }
+
+      uni = second%10;
+      deci = second/10;
+
+      outb(cmos_address, 0x00);   // second
+      outb(cmos_data, hex2[deci] | hex1[uni]);
+
+      uni = minute%10;
+      deci = minute/10;
       
-      outb(cmos_address, 0x02);   // select Status Register A, and disable NMI (by setting the 0x80 bit)
-      outb(cmos_data, 0x08);
+      outb(cmos_address, 0x02);   // minute
+      outb(cmos_data, hex2[deci] | hex1[uni]);
 
-      outb(cmos_address, 0x04);   // select Status Register A, and disable NMI (by setting the 0x80 bit)
-      outb(cmos_data, 0x08);
+      uni = hour%10;
+      deci = hour/10;
+
+      outb(cmos_address, 0x04);   // hour
+      outb(cmos_data, hex2[deci] | hex1[uni]);
 }
  
 void read_rtc() {
@@ -163,18 +148,17 @@ rtc_main(int argc, char *argv[])
 {
 
       if(argc  == 1){
-            read_rtc(); //toma los datos y los guarda en el TLS
+            read_rtc();
 
-            printk("Valores de RTC= hora: %d minutos:%d segundos: %d\n", hour, minute, second);
+            printk("Time: %d:%d:%d  Date:%d/%d/%d \n", hour, minute, second, day, month, year);
 
             return 0;
       }else{
-            write_rtc(*argv[0], *argv[1], *argv[2]);
+            if(strcmp(argv[1], "set") == 0)
+                  printk("es set %s\n", argv[1]);
+
+            write_rtc(atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
             return 0;
       }
 
 }
-
-// time
-
-// time set h m s

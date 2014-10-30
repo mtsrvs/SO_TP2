@@ -42,6 +42,7 @@ cmdtab[] =
 	{	"kill",			kill_main,			"tarea [status]"	},
 	{	"test",			test_main,			""					},
 	{	"time",			rtc_main,			""					}, //RTC
+	{	"time set",		rtc_main,			""					}, //RTC	
 	{	"cron",			cron_main,			""					},
 	{															}
 };
