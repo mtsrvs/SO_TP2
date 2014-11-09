@@ -19,7 +19,7 @@ int kill_main(int argc, char *argv[]);				// kill.c
 int ts_main(int argc, char *argv[]);				// ts.c
 
 //Nuestras tareas creadas
-int time_main(void);								// time.c
+int time_main(int argc, char *argv[]);				// time.c
 // int cron_main(void);								// cron.c
-void cal_and_ts_main(void);									//cal_and_ts.c
+int cal_and_ts_main(int argc, char *argv[]);		//cal_and_ts.c
 #endif
