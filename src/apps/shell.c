@@ -41,9 +41,9 @@ cmdtab[] =
 	{	"ts", 			ts_main,			"[consola...]"		},
 	{	"kill",			kill_main,			"tarea [status]"	},
 	{	"test",			test_main,			""					},
-	{	"time",			rtc_main,			""					}, //RTC
-	{	"time set",		rtc_main,			""					}, //RTC	
-	{	"cron",			cron_main,			""					},
+	{	"time",			time_main,			""					}, //RTC
+	{	"time set",		time_main,			"[hh mm ss dd mm yyyy]"}, //RTC	
+	{	"calendar",		cal_and_ts_main,	""					},
 	{															}
 };
 

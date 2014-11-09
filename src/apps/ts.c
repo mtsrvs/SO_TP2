@@ -56,8 +56,8 @@ ts_main(int argc, char *argv[])
 	}
 
 	mt_cons_clear();
-	cprintk(WHITE, BLUE, "%s", title);
-	mt_cons_gotoxy(0, 24);
+	cprintk(WHITE, BLUE, "%s", title); // permite escribir con letra y fondo particular
+	mt_cons_gotoxy(0, 24); // me ubica en un lugar en pantalla (X e Y) para deespues escribir.
 	cprintk(WHITE, BLUE, "%s", foot);
 	skip = 0;
 	do
