@@ -15,7 +15,7 @@ superior derecha de una consola.
 fechas y horas.
 - Sistema de timers con callbacks con resolución de 1 ms.
 
-Los programas agregados a mtask son:
+# Los programas agregados a mtask son:
 - time
 - time set
 - calendar
