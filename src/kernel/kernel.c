@@ -1,10 +1,15 @@
 #include <kernel.h>
+#include <rtc.h>
 #include <apps.h>
+#include <cron.h>
 
 #define CLOCKIRQ		0						/* interrupcion de timer */
+#define RTCIRQ		    8						/* interrupcion de RTC */
 #define INTFL			0x200					/* bit de habilitación de interrupciones en los flags */
 #define MSPERTICK 		10						/* 100 Hz */
 #define QUANTUM			10						/* 100 mseg */
+
+#define MSRTCTICK 		0x03					
 
 Task_t * volatile mt_curr_task;					/* tarea en ejecucion */
 Task_t * volatile mt_last_task;					/* tarea anterior */
@@ -19,6 +24,11 @@ static TaskQueue_t terminated_q;				/* cola de tareas terminadas */
 static Task_t *task_list;						/* lista de tareas existentes */
 static unsigned num_tasks;						/* cantidad de tareas existentes */
 
+static CronTask_t *cron_list;					/*tareas del cron*/
+static int cron_num_tasks;
+int suma=0;
+int ticks=0;
+
 static void scheduler(void);
 
 static void block(Task_t *task, TaskState_t state);
@@ -32,8 +42,13 @@ static void count_down(volatile unsigned *cnt);	/* lazo para hacer delays en mic
 static void free_terminated(void);				/* libera tareas terminadas */
 static void clockint(unsigned irq);				/* manejador interrupcion de timer */
 
+//static void rtcint(unsigned irq);				/* manejador interrupcion de RTC */
+
 static void task_list_add(Task_t *task);		/* agregar a la lista de tareas existentes */
 static void task_list_remove(Task_t *task);		/* quitar de la lista de tareas existentes */
+
+void cronTask_list_add(CronTask_t *task);		
+void cronTask_list_remove(CronTask_t *task);		
 
 static int null_task(void *arg);				/* tarea nula */
 static int run_shell(void *arg);				/* tarea que dispara un shell repetidamente */
@@ -106,6 +121,13 @@ mt_main(unsigned magic, boot_info_t *info)
 	mt_setup_timer(MSPERTICK);
 	mt_set_int_handler(CLOCKIRQ, clockint);
 	mt_enable_irq(CLOCKIRQ);
+
+    //mt_set_int_handler(RTCIRQ, rtcint);
+    //mt_setup_rtc_timer(MSRTCTICK);
+    //mt_enable_irq(RTCIRQ);
+    //mt_set_int_handler(8, alarm_handler);
+    //mt_enable_irq(8);
+    rtc_setup();
 
 	// Inicializar el sistema de manejo del coprocesador aritmético
 	print0("Inicializando manejo del coprocesador\n");
@@ -397,6 +419,7 @@ clockint(unsigned irq)
 	Task_t *task;
 
 	++timer_ticks;
+	ticks++;
 	if ( ticks_to_run )
 		ticks_to_run--;
 	while ( (task = mt_peekfirst_time()) && !task->ticks )
@@ -408,6 +431,75 @@ clockint(unsigned irq)
 		task->ticks--;
 }
 
+int
+getCountCronList()
+{
+	return cron_num_tasks;
+}
+
+CronTask_t*
+get_cron_tasks()
+{
+	return cron_list;
+}
+
+int
+kernel_rtc_int_handler()
+{
+    int i = 0;
+	TaskInfo_t info;
+
+    int cur_month, cur_day, cur_hr, cur_min;
+
+    //obtengo fecha y hora actual
+    unsigned char hr, min, day, month, no_use_I, no_use_II, no_use_III;
+    read_rtc(&hr, &min, &no_use_I, &day, &month, &no_use_II, &no_use_III);
+
+    cur_month = month;
+    cur_day = day;
+    cur_hr = hr;
+    cur_min = min;
+
+    if (cron_num_tasks > 0)
+	{
+		CronTask_t *c_task, *next;
+		next = cron_list;
+		// printk("valor de ticks:%d\n", next->ticks);
+		// printk("next: %d/%d %d:%d\ncur: %d/%d %d:%d\n", 
+		// 	(next->date)->day, (next->date)->month, (next->date)->hr, (next->date)->min,
+		// 	cur_day, cur_month, cur_hr, cur_min);
+
+		while(next)     //recorro la cola de tareas del cron
+		{
+			c_task = next;
+			//comparo la fecha y hr actual con la de cada tarea, si coincide pongo la tarea en la cola de tiempo
+			if((c_task->date)->month == cur_month && (c_task->date)->day == cur_day && 
+				(c_task->date)->hr == cur_hr && (c_task->date)->min == cur_min)
+			{
+				c_task->ticks -= 1;
+
+				if(c_task->ticks == 0)
+				{
+					Ready(c_task->task);
+					// printk("ejecutar\n");
+					mt_cons_cursor(true);
+					GetInfo(CurrentTask(), &info);
+					cprintk(LIGHTCYAN, BLACK, "\rMT%u> ", info.consnum);
+					mt_cons_clreom();
+					cronTask_list_remove(c_task);
+		    		next = c_task->list_next; 
+				}
+				// else{ 
+			 //  		next = c_task->list_next; 
+			 //    }
+			}else{ 
+		   		next = c_task->list_next; 
+			} 
+		}
+	}	
+	// cprintk(LIGHTCYAN, BLACK, "\rMT%u> ", info.consnum);
+    return i;
+}
 /*
 --------------------------------------------------------------------------------
 null_task - Tarea nula
@@ -456,6 +548,41 @@ task_list_add(Task_t *task)
 	task_list = task;
 }
 
+void 
+cronTask_list_add(CronTask_t *task)
+{
+	cron_num_tasks++;
+
+	if ( !cron_list )
+	{
+		// Primera inserción, tarea nula
+		cron_list = task;
+		return;
+	}
+
+	// Insertar en la cabeza
+	task->list_next = cron_list;
+	cron_list->list_prev = task;
+	cron_list = task;
+}
+
+void 
+cronTask_list_remove(CronTask_t *task)
+{
+	cron_num_tasks--;
+
+	if ( task == cron_list )
+	{
+		// Primera tarea de la lista
+		cron_list = cron_list->list_next;
+		cron_list->list_prev = NULL;
+		return;
+	}
+
+	// Ni la primera ni la última
+	task->list_prev->list_next = task->list_next;
+	task->list_next->list_prev = task->list_prev;
+}
 /*
 --------------------------------------------------------------------------------
 task_list_remove - Quitar una tarea de la lista de tareas.
@@ -1430,5 +1557,11 @@ Free(void *mem)
 	Atomic();
 	free(mem);
 	Unatomic();
+}
+
+int 
+get_suma(void)
+{
+	return suma;
 }
 

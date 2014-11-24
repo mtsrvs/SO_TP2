@@ -163,3 +163,19 @@ void print_calendar(int year, int daycode, int current_month)
             printk("\n " );
     }
 }
+
+int check_time(int hour, int minute, int second){
+      if(hour<0 || hour>23 || minute<0 || minute >59 || second<0 || second>59){
+            return 1;
+      }
+
+      return 0;
+}
+
+int check_date(int day, int month, int year){
+      int daysinmonth = days_in_month(GREGORIAN, year, month);
+
+      if ( day >= 1 && day <= daysinmonth )
+            return 0;
+      return 1;
+}

@@ -1,31 +1,24 @@
 #include <kernel.h>
 #include <calendar.h>
+#include <cron.h>
 #include <rtc.h>
 
 static const char *title  = 
     "                       Calendario y Tareas Programadas                          ";
 
 static const char *tasks  = 
-    "   Tarea      Nombre       Fecha   Hora      Repeticiones      Intervalo [ms]   ";
+    "   Tarea        Fecha        Hora         Repeticiones         Intervalo [ms]   ";
 
 
 static const char *foot  = 
     "       ENTER, ESPACIO, BS: scroll      ESC: reset scroll      S: salir          ";
-
-
-static char *
-name(void *p)
-{
-    char *s = GetName(p);
-    return s ? s : "";
-}
 
 static bool
 getuser(unsigned *skip)
 {
     int c;
 
-    switch ( (c  = getch_timed(5000)) )
+    switch ( (c  = getch_timed(200)) )
     {
         case 'S':
         case 's':
@@ -58,7 +51,7 @@ cal_and_ts_main(int argc, char *argv[])
     unsigned char century;
     int fullyear = 0;
     
-    unsigned skip;
+    unsigned n, skip;
     bool cursor = mt_cons_cursor(false);
 
     mt_cons_clear();
@@ -80,12 +73,35 @@ cal_and_ts_main(int argc, char *argv[])
     mt_cons_gotoxy(0, 9); // me ubica en un lugar en pantalla (X e Y) para deespues escribir.
     cprintk(WHITE, BLUE, "%s", tasks);
 
+    int i, ntasks;
+    CronTask_t *c_task, *next;
+
     do
     {
-        //nothing
+        ntasks = getCountCronList();
+        next = c_task = get_cron_tasks();
+
+        for ( n = 0, i = 10; i < 24 && ntasks-- && next; )
+        {
+            if ( n++ < skip ){
+                next = next->list_next;    
+                continue;
+            }
+            mt_cons_gotoxy(0, i++);
+            printk("   %.16s       %02d/%02d/%04d    %02d:%02d    %12d   %17d\n", next->name, 
+                (next->date)->day, (next->date)->month, (next->date)->year, 
+                (next->date)->hr, (next->date)->min, next->ticks, next->msecs);
+            next = next->list_next; 
+        }
+        while ( i < 24 )
+        {
+            mt_cons_gotoxy(0, i++);
+            mt_cons_clreol();
+        }
     }
     while ( getuser(&skip) );
     mt_cons_clear();
-    mt_cons_cursor(cursor);
+    mt_cons_cursor(cursor); 
+
     return 0;
 }

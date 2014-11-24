@@ -2,21 +2,7 @@
 #include <rtc.h>
 #include <calendar.h>
 
-int check_time(unsigned char hour, unsigned char minute, unsigned char second){
-      if(hour<0 || hour>23 || minute<0 || minute >59 || second<0 || second>59){
-            return 1;
-      }
 
-      return 0;
-}
-
-int check_date(unsigned char day, unsigned char month, int year){
-      int daysinmonth = days_in_month(GREGORIAN, year, month);
-
-      if ( day >= 1 && day <= daysinmonth )
-            return 0;
-      return 1;
-}
 
 int
 time_main(int argc, char *argv[])

@@ -17,7 +17,9 @@
 
 #define EOF -1
 
-typedef enum { false, true } bool;
+typedef int bool;
+#define true 1
+#define false 0
 
 /* io.S */
 

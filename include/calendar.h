@@ -285,4 +285,9 @@ void print_calendar(int year, int daycode, int current_month);
 
 int full_year(unsigned char century, unsigned char year);
 
+
+int check_time(int hour, int minute, int second);
+
+int check_date(int day, int month, int year);
+
 #endif

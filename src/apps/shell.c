@@ -44,6 +44,7 @@ cmdtab[] =
 	{	"time",			time_main,			""					}, //RTC
 	{	"time set",		time_main,			"[hh mm ss dd mm yyyy]"}, //RTC	
 	{	"calendar",		cal_and_ts_main,	""					},
+	{   "cron", 		cron_main, 			""					}, // TAREA CRON
 	{															}
 };
 

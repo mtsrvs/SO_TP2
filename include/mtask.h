@@ -12,6 +12,9 @@ typedef unsigned long long Time_t;
 typedef struct Task_t Task_t;
 typedef struct TaskQueue_t TaskQueue_t;
 
+typedef struct Date_t Date_t;
+typedef struct CronTask_t CronTask_t;
+
 typedef int (*TaskFunc_t)(void *arg);
 typedef void (*SaveRestore_t)(void);
 typedef void (*Cleanup_t)(void);

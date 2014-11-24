@@ -5,7 +5,18 @@
 #include <segments.h>
 #include <const.h>
 
+
+#define RTC_INT 8
+#define CMOS_IN_PORT 0x70
+#define CMOS_OUT_PORT 0x71
+
+#define CMOS_REG_A 0x0A
+#define CMOS_REG_B 0x0B
+#define CMOS_REG_C 0x0C
+
 #define MTASK_VERSION	"20.01"		// Nro. de versión de MTask
+
+
 
 // Registros empujados al stack por una interrupción o excepción.
 // Esta estructura debe mantenerse sincronizada con el código de resguardo y
@@ -71,6 +82,7 @@ struct Task_t
 	bool			protected;
 };
 
+int get_suma(void);
 /* malloc.c */
 
 void mt_setup_heap(unsigned himem_size);
@@ -106,6 +118,9 @@ typedef struct boot_info_t boot_info_t;
 void mt_main(unsigned magic, boot_info_t *info);
 bool mt_select_task(void);
 
+int getCountCronList();
+CronTask_t* get_cron_tasks();
+
 extern Task_t * volatile mt_curr_task;
 extern Task_t * volatile mt_last_task;
 extern Task_t * volatile mt_fpu_task;
@@ -124,10 +139,15 @@ void mt_set_int_handler(unsigned irq_num, interrupt_handler handler);
 void mt_set_exception_handler(unsigned except_num, exception_handler handler);
 void mt_enable_irq(unsigned irq);
 void mt_disable_irq(unsigned irq);
+void alarm_handler(unsigned irq_number);
 
 /* timer.c */
 
 void mt_setup_timer(unsigned freq);
+void mt_setup_rtc_timer(unsigned rate);
+void throw_rtc_contents();
+
+void rtc_setup();
 
 /* queue.c */
 
@@ -283,6 +303,8 @@ enum ide_minors				// Números de los discos
 	IDE_SEC_SLAVE
 };
 
+void cronTask_list_add(CronTask_t *task);
+int kernel_rtc_int_handler(void);
 void mt_ide_init(void);
 unsigned mt_ide_read(unsigned minor, unsigned block, unsigned nblocks, void *buffer);
 unsigned mt_ide_write(unsigned minor, unsigned block, unsigned nblocks, void *buffer);

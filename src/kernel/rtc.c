@@ -25,7 +25,6 @@ unsigned char get_RTC_register(int reg) {
       outb(cmos_address, reg);
       return inb(cmos_data);
 }
- 
 
 unsigned toBCD(unsigned char value){
       char hex2[10] = {0x00, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80, 0x90};
