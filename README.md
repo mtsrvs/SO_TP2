@@ -4,8 +4,8 @@ SO_TP2
 Sistemas Operativos - ITBA - 2014Q2
 
 Integrante del grupo:
-Sal-Lari, Julieta
-Rivas, Matias
+- Sal-Lari, Julieta
+- Rivas, Matias
 
 # Trabajo Practico: Driver de RTC (real time clock)
 - Aplicación para leer y setear fecha y hora
@@ -16,10 +16,10 @@ fechas y horas.
 - Sistema de timers con callbacks con resolución de 1 ms.
 
 Los programas agregados a mtask son:
-	time
-	time set
-	calendar
-	cron
+- time
+- time set
+- calendar
+- cron
 
 # Time
 
