@@ -3,45 +3,46 @@ SO_TP2
 
 Sistemas Operativos - ITBA - 2014Q2
 
-# Programa time (ejecucion)
+# Programa time
 
     MT1> time
 
 `time` mostrara la fecha y hora actual del sistema.
 
 
-# Programa time set (ejecucion)
+# Programa time set
 
-   MT1> time set hh mm ss dd mm yyyy
-
+    MT1> time set hh mm ss dd mm yyyy
+    
 `time set` permite setear la fecha y hora.
 Los nuevos valores a ingresar son los siguiente: `hh mm ss dd mm yyyy`.
 
 
-# Programa calendar (
+# Programa calendar
 
-  MT1> calendar
+      MT1> calendar
 
-`<dirección ipc>` es:
+Muestra el calendario y las tareas encoladas mediante `cron`.
+El calendario mostrado esta en formato gregoriano.
 
-- `FILESIG`, `FIFOS`: path de un directorio para archivos temporales (ej `tmp`)
-- `SOCKETS`: número de puerto
-- `SHMEM` y `MQUEUES`: archivo cualquiera, legible
+# Programa cron
 
+      MT1> cron
 
-# Cliente
+Permite que se agenden tareas para que sean ejecutadas cierto dia y hora varias veces (repeticiones)
+con intervalos medidios en milisegundos (ms).Tambien brinda la posibilidad de ejecutar programas en 
+el momento con repeticiones.
 
-    bin/client <dirección ipc> <comando> [argumentos...]
+ejemplo de uso agendando programa
 
-`<dirección ipc>` es:
-
-- `FILESIG`, `FIFOS`: `<tmp>/<pid server>`, siendo `<tmp>` el mismo del server
-- `SOCKETS`: una dirección en formato `<ip>:<puerto>` (ej 127.0.0.1:5000)
-- `SHMEM` y `MQUEUES`: un archivo cualquiera, legible (el mismo)
-
-
-`<comando>` es uno de:
-
-1. `list`: muestra las películas
-2. `buy <número de película>`: compra una entrada
-3. `get <código de entrada>`: consulta una entrada
+    MT1> cron
+    Ingresar la funcion y sus parametros:
+    time
+    Ingrese fecha y hora en la que correra la funcion con formato dd/mm/yyyy hh:mm
+    24/11/2014 23:00
+    Ingrese cantidad de repeticiones
+    10
+    Ingrese cada cuantos milisegundos sean los intervalos
+    10
+    Se encolo la funcion:%s para el 24/11 a las 23:00
+    
