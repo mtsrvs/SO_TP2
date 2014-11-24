@@ -50,6 +50,7 @@ El calendario mostrado esta en formato gregoriano.
 Permite que se agenden tareas para que sean ejecutadas cierto dia y hora varias veces (repeticiones)
 con intervalos medidios en milisegundos (ms).Tambien brinda la posibilidad de ejecutar programas en 
 el momento con repeticiones.
+Los parametros se ingresan de la misma manera si  el programa fuese ejecutado directamente.
 
 # Ejemplo de uso agendando programa
 
