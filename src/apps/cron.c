@@ -67,13 +67,6 @@ msecs_to_ticks(unsigned msecs)
 
 char line[BUFSIZE];
 
-// void clean_buffer(){
-// 	int i;
-// 	for( i = 0; i < BUFSIZE; i++){
-// 		line[i] = 0;
-// 	}
-// }
-
 bool
 correAhora()
 {
@@ -81,7 +74,6 @@ correAhora()
 	printk("1 - Si\n");
 	printk("2 - No\n");
 
-	// char line[BUFSIZE];
 	line[0]=0;
 	int pos = getline(line, sizeof line);
 	while ( --pos >= 0 )
@@ -98,7 +90,7 @@ correAhora()
 		}
 		break;
 	}
-	// printk("line[0]: %c\n", line[0]);
+
 	if(line[0] == '1')
 	{
 		return false;
