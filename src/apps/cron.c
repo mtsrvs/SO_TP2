@@ -66,7 +66,7 @@ msecs_to_ticks(unsigned msecs)
 }
 
 char line[BUFSIZE];
- 
+  
 bool
 correAhora()
 {
