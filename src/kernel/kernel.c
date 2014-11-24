@@ -447,8 +447,6 @@ int
 kernel_rtc_int_handler()
 {
     int i = 0;
-	TaskInfo_t info;
-
     int cur_month, cur_day, cur_hr, cur_min;
 
     //obtengo fecha y hora actual
@@ -464,10 +462,6 @@ kernel_rtc_int_handler()
 	{
 		CronTask_t *c_task, *next;
 		next = cron_list;
-		// printk("valor de ticks:%d\n", next->ticks);
-		// printk("next: %d/%d %d:%d\ncur: %d/%d %d:%d\n", 
-		// 	(next->date)->day, (next->date)->month, (next->date)->hr, (next->date)->min,
-		// 	cur_day, cur_month, cur_hr, cur_min);
 
 		while(next)     //recorro la cola de tareas del cron
 		{
@@ -481,23 +475,18 @@ kernel_rtc_int_handler()
 				if(c_task->ticks == 0)
 				{
 					Ready(c_task->task);
-					// printk("ejecutar\n");
 					mt_cons_cursor(true);
-					GetInfo(CurrentTask(), &info);
-					cprintk(LIGHTCYAN, BLACK, "\rMT%u> ", info.consnum);
-					mt_cons_clreom();
+					// GetInfo(CurrentTask(), &info);
+					// cprintk(LIGHTCYAN, BLACK, "\rMT%u> ", info.consnum);
+					// mt_cons_clreom();
 					cronTask_list_remove(c_task);
 		    		next = c_task->list_next; 
 				}
-				// else{ 
-			 //  		next = c_task->list_next; 
-			 //    }
 			}else{ 
 		   		next = c_task->list_next; 
 			} 
 		}
 	}	
-	// cprintk(LIGHTCYAN, BLACK, "\rMT%u> ", info.consnum);
     return i;
 }
 /*

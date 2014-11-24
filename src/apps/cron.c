@@ -124,7 +124,7 @@ fechaHrOk(int day, int month, int year, int hr, int min)
 }
 
 int
-cron_main(int argc, char *argv[]){
+cron_main(int argc, char *argv[]){ 
 
 	printk("Ingresar la funcion y sus parametros:\n");
 
@@ -143,11 +143,6 @@ cron_main(int argc, char *argv[]){
 	char min[3];
 	
 	year[4] = month[2] = day[2] = hr[2] = min[2] = '\0';
-
-	//mt_cons_getattr(&fg, &bg);
-
-	// Leer línea de comando eventualmente usando la historia
-	//-----------------
 	
 	// Sacar espacios al final y detectar comando en background
 	line[0]=0;
@@ -175,30 +170,6 @@ cron_main(int argc, char *argv[]){
 	{
 		ex.args[ex.nargs] = NULL;
 		
-		// /* Comandos internos */
-		// if ( strcmp(ex.args[0], "help") == 0 )
-		// {
-		// 	printk("Comandos internos:\n");
-		// 	printk("\thelp\n");
-		// 	printk("\texit [status]\n");
-		// 	printk("\treboot\n");
-		// 	printk("Aplicaciones:\n");\
-		// 	for ( cp = cmdtab ; cp->name ; cp++ )
-		// 		printk("\t%s %s\n", cp->name, cp->params);
-		// }
-
-		// if ( strcmp(ex.args[0], "exit") == 0 )
-		// {
-		// 	return ex.nargs > 1 ? atoi(ex.args[1]) : 0;
-		// }
-
-		// if ( strcmp(ex.args[0], "reboot") == 0 )
-		// {
-		// 	*(short *) 0x472 = 0x1234;
-		// 	while ( true )
-		// 		outb(0x64, 0xFE);
-		// }
-
 		/* Aplicaciones */
 		found = false;
 		int rpt = 0;
@@ -240,8 +211,6 @@ cron_main(int argc, char *argv[]){
 						}
 						break;
 					}
-					// Separar en argumentos
-					//strcpy(ex.buf, line);
 
 					day[0] = line[0];
 					day[1] = line[1];
@@ -261,9 +230,6 @@ cron_main(int argc, char *argv[]){
 						return 1;
 					}
 
-					// if(!fechaHrOk(atoi(day), atoi(month), atoi(year), atoi(hr), atoi(min))){
-					// 	return 1;
-					// }
 					date.day = atoi(day);
 					date.month =  atoi(month);
 					date.year = atoi(year);
@@ -289,8 +255,6 @@ cron_main(int argc, char *argv[]){
 					break;
 				}
 
-				// Separar en argumentos
-				//strcpy(ex.buf, line);
 				repeat_mode = atoi(line);
 				if(repeat_mode > 0)
 				{
@@ -312,8 +276,6 @@ cron_main(int argc, char *argv[]){
 						break;
 					}
 
-					// Separar en argumentos
-					//strcpy(ex.buf, line);
 					msecs = atoi(line);
 				}
 

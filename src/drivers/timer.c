@@ -38,9 +38,7 @@ void alarm_handler(unsigned irq_number) {
     // Leo el registro C para aceptar futuras interrupciones
     outb(0x70, 0x0C);
     register_c = inb(0x71);
-    //suma++;
     suma += kernel_rtc_int_handler();
-    // printk(YELLOW, BLACK, "RING!\n"); 
 }
 
 void rtc_setup() {
